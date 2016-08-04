@@ -3,6 +3,8 @@
 Created on Thu Jul 14 20:31:50 2016
 
 @author: John Plombon
+Revision History
+    08-02-2016:  Fix issue with start and end month for GapData close/open
 """
 import google_intraday as goog_web
 import pandas.io.data as web
@@ -53,15 +55,19 @@ def IntradayStatics( symbol = 'iwm', day = 1, per_s = 60, date = '7_14_2016') :
     calen_days = 5
     if day_int > calen_days :
         start_day = day_int-calen_days
+        start_month_int = month_int
+        end_month_int = month_int
     else:
         start_day = 31 - calen_days
         if month_int == 1:
-            month_int = 12
+            start_month_int = 12
+            end_month_int = month_int
         else:
-            month_int = month_int - 1
+            start_month_int = month_int - 1
+            end_month_int = month_int
     
-    start_time = datetime.datetime(year_int, month_int, start_day)
-    end_time = datetime.datetime(year_int, month_int, day_int)
+    start_time = datetime.datetime(year_int, start_month_int, start_day)
+    end_time = datetime.datetime(year_int, end_month_int, day_int)
     print "Start Time = {!r}".format( start_time )
     print "End Time = {!r}".format( end_time )
     GapData = web.DataReader(symbol, 'google', start_time, end_time)
